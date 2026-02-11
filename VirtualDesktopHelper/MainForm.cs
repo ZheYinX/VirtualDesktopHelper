@@ -364,7 +364,7 @@ namespace VirtualDesktopHelper
 		{
 			try
 			{
-				string value = IniFileHelper.ReadValue(SectionSettings, KeySwitchDesktopOnMove, "false");
+				string value = IniFileHelper.ReadValue(SectionSettings, KeySwitchDesktopOnMove, "true");
 				if (bool.TryParse(value, out bool result))
 				{
 					switchDesktopOnMove = result;
