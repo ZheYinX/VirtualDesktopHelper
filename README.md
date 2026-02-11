@@ -1,0 +1,2 @@
+# VirtualDesktopHelper
+使用键盘快捷键将当前活动窗口移动到相邻的虚拟桌面中。
