@@ -3,11 +3,16 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VirtualDesktop.Unify;
+using Microsoft.Win32;
 
 namespace VirtualDesktopHelper
 {
 	public partial class MainForm : Form
 	{
+		// 注册表自启动项信息
+		private const string RunRegistryKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+		private const string StartupValueName = "VirtualDesktopHelper";
+
 		/// <summary>
 		/// 热键存储（每种功能一个主键 + 修饰键）
 		/// </summary>
@@ -98,12 +103,93 @@ namespace VirtualDesktopHelper
 				SetupTrayIcon();      // 设置系统托盘
 				LoadSettings();       // 加载配置
 
+				// 初始化自启动按钮文本
+				try
+				{
+					if (btnStartup != null)
+					{
+						btnStartup.Text = IsStartupEnabled() ? "取消自启动" : "启用自启动";
+					}
+				}
+				catch { /* 忽略自启动读取错误 */ }
+
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				ExitApplication();
 			}
+		}
+
+		// 切换自启动按钮点击处理
+		private void BtnToggleStartup_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				bool enabled = IsStartupEnabled();
+				SetStartupEnabled(!enabled);
+				btnStartup.Text = !enabled ? "取消自启动" : "启用自启动";
+				ShowTrayNotification("自启动设置", !enabled ? "已启用自启动" : "已取消自启动", ToolTipIcon.Info);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("设置自启动失败: " + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private bool IsStartupEnabled()
+		{
+			try
+			{
+				using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RunRegistryKey, false))
+				{
+					if (key == null) return false;
+					var val = key.GetValue(StartupValueName) as string;
+					if (string.IsNullOrEmpty(val)) return false;
+					// 比较路径是否匹配（可能包含引号）
+					string exe = QuoteIfNeeded(Application.ExecutablePath);
+					return string.Equals(NormalizePath(val), NormalizePath(exe), StringComparison.OrdinalIgnoreCase);
+				}
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private void SetStartupEnabled(bool enabled)
+		{
+			using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RunRegistryKey, true))
+			{
+				if (key == null)
+					throw new InvalidOperationException("无法打开注册表路径以设置自启动。");
+
+				if (enabled)
+				{
+					string exePath = QuoteIfNeeded(Application.ExecutablePath);
+					key.SetValue(StartupValueName, exePath);
+				}
+				else
+				{
+					key.DeleteValue(StartupValueName, false);
+				}
+			}
+		}
+
+		private static string QuoteIfNeeded(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return path;
+			if (path.StartsWith("\"") && path.EndsWith("\"")) return path;
+			if (path.IndexOf(' ') >= 0) return "\"" + path + "\"";
+			return path;
+		}
+
+		private static string NormalizePath(string s)
+		{
+			if (string.IsNullOrEmpty(s)) return s ?? string.Empty;
+			s = s.Trim();
+			if (s.StartsWith("\"") && s.EndsWith("\"")) s = s.Substring(1, s.Length - 2);
+			return s;
 		}
 
 		#region 事件绑定与打开热键捕获窗口
@@ -334,7 +420,7 @@ namespace VirtualDesktopHelper
 
 		private void BtnSave_Click(object sender, EventArgs e)
 		{
-					SaveSettings();
+			SaveSettings();
 			MessageBox.Show("设置已成功保存！", "信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
@@ -541,23 +627,30 @@ namespace VirtualDesktopHelper
 
 		void MoveWindow(bool direction)
 		{
-			// 判断是否为桌面窗口
-			if (Window_WinApiHelper.IsCurrentWindowDesktop())
+			try
 			{
-				System.Media.SystemSounds.Beep.Play();
-				return;
+				// 判断是否为桌面窗口
+				if (Window_WinApiHelper.IsCurrentWindowDesktop())
+				{
+					System.Media.SystemSounds.Beep.Play();
+					return;
+				}
+
+				IntPtr h = IntPtr.Zero;
+				if (chkSwitchDesktopOnMove.Checked)
+					h = Window_WinApiHelper.UGetForegroundWindow();
+
+				if (UVirtualDesktop?.MoveWindow(direction, chkSwitchDesktopOnMove.Checked) != true)
+					System.Media.SystemSounds.Beep.Play();
+				else
+				{
+					if (h != IntPtr.Zero)
+						Window_WinApiHelper.USetForegroundWindow(h);
+				}
 			}
-
-			IntPtr h = IntPtr.Zero;
-			if (chkSwitchDesktopOnMove.Checked)
-				h = Window_WinApiHelper.UGetForegroundWindow();
-
-			if (UVirtualDesktop?.MoveWindow(direction, chkSwitchDesktopOnMove.Checked) != true)
-				System.Media.SystemSounds.Beep.Play();
-			else
+			catch (Exception x)
 			{
-				if (h != IntPtr.Zero)
-					Window_WinApiHelper.USetForegroundWindow(h);
+				ShowTrayNotification("操作失败", x.Message, ToolTipIcon.Error);
 			}
 		}
 

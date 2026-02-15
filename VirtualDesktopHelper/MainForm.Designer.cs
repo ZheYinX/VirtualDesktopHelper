@@ -27,6 +27,8 @@ namespace VirtualDesktopHelper
         private Button btnRightMove;
         private Button btnPinWindow;
         private Button btnSave;
+        private Button btnStartup;
+        private FlowLayoutPanel bottomPanel;
         private CheckBox chkSwitchDesktopOnMove;
         private TableLayoutPanel mainPanel;
         private TableLayoutPanel leftMovePanel;
@@ -72,6 +74,8 @@ namespace VirtualDesktopHelper
 			this.settingsPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.chkSwitchDesktopOnMove = new System.Windows.Forms.CheckBox();
 			this.btnSave = new System.Windows.Forms.Button();
+			this.btnStartup = new System.Windows.Forms.Button();
+			this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.mainPanel.SuspendLayout();
 			this.grpLeftMove.SuspendLayout();
 			this.leftMovePanel.SuspendLayout();
@@ -91,7 +95,7 @@ namespace VirtualDesktopHelper
 			this.mainPanel.Controls.Add(this.grpRightMove, 0, 1);
 			this.mainPanel.Controls.Add(this.grpPinWindow, 0, 2);
 			this.mainPanel.Controls.Add(this.grpSettings, 0, 3);
-			this.mainPanel.Controls.Add(this.btnSave, 0, 4);
+			this.mainPanel.Controls.Add(this.bottomPanel, 0, 4);
 			this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainPanel.Location = new System.Drawing.Point(0, 0);
 			this.mainPanel.Name = "mainPanel";
@@ -103,6 +107,17 @@ namespace VirtualDesktopHelper
 			this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
 			this.mainPanel.Size = new System.Drawing.Size(484, 261);
 			this.mainPanel.TabIndex = 0;
+			// 
+			 // bottomPanel
+			 // 
+			this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.bottomPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+			this.bottomPanel.Location = new System.Drawing.Point(3, 223);
+			this.bottomPanel.Name = "bottomPanel";
+			this.bottomPanel.Size = new System.Drawing.Size(478, 35);
+			this.bottomPanel.TabIndex = 5;
+			this.bottomPanel.Controls.Add(this.btnSave);
+			this.bottomPanel.Controls.Add(this.btnStartup);
 			// 
 			// grpLeftMove
 			// 
@@ -294,6 +309,16 @@ namespace VirtualDesktopHelper
 			this.btnSave.Text = "保存设置";
 			this.btnSave.UseVisualStyleBackColor = true;
 			this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
+			// 
+			// btnStartup
+			// 
+			this.btnStartup.Location = new System.Drawing.Point(109, 223);
+			this.btnStartup.Name = "btnStartup";
+			this.btnStartup.Size = new System.Drawing.Size(120, 30);
+			this.btnStartup.TabIndex = 6;
+			this.btnStartup.Text = "启用自启动";
+			this.btnStartup.UseVisualStyleBackColor = true;
+			this.btnStartup.Click += new System.EventHandler(this.BtnToggleStartup_Click);
 			// 
 			// MainForm
 			// 
