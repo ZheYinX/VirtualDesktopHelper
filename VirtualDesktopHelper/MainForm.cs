@@ -95,6 +95,7 @@ namespace VirtualDesktopHelper
 		{
 			try
 			{
+				// 初始化虚拟桌面接口
 				UVirtualDesktop = UnifyInterfaceManager.GetInterfaceByOs();
 				if (UVirtualDesktop == null)
 					throw new Exception("获取Windows虚拟桌面操作接口失败！可能是不受支持的系统版本！");
@@ -113,6 +114,15 @@ namespace VirtualDesktopHelper
 				}
 				catch { /* 忽略自启动读取错误 */ }
 
+				// 懒惰实现启动隐藏窗口
+				Task.Run(async () =>
+				{
+					await Task.Delay(300).ConfigureAwait(false);
+					this.Invoke(new Action(() =>
+					{
+						this.Visible = false;
+					}));
+				});
 			}
 			catch (Exception x)
 			{

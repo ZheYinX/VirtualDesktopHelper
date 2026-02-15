@@ -73,9 +73,9 @@ namespace VirtualDesktopHelper
 			this.grpSettings = new System.Windows.Forms.GroupBox();
 			this.settingsPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.chkSwitchDesktopOnMove = new System.Windows.Forms.CheckBox();
+			this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnStartup = new System.Windows.Forms.Button();
-			this.bottomPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.mainPanel.SuspendLayout();
 			this.grpLeftMove.SuspendLayout();
 			this.leftMovePanel.SuspendLayout();
@@ -85,6 +85,7 @@ namespace VirtualDesktopHelper
 			this.pinWindowPanel.SuspendLayout();
 			this.grpSettings.SuspendLayout();
 			this.settingsPanel.SuspendLayout();
+			this.bottomPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mainPanel
@@ -107,17 +108,6 @@ namespace VirtualDesktopHelper
 			this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
 			this.mainPanel.Size = new System.Drawing.Size(484, 261);
 			this.mainPanel.TabIndex = 0;
-			// 
-			 // bottomPanel
-			 // 
-			this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.bottomPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-			this.bottomPanel.Location = new System.Drawing.Point(3, 223);
-			this.bottomPanel.Name = "bottomPanel";
-			this.bottomPanel.Size = new System.Drawing.Size(478, 35);
-			this.bottomPanel.TabIndex = 5;
-			this.bottomPanel.Controls.Add(this.btnSave);
-			this.bottomPanel.Controls.Add(this.btnStartup);
 			// 
 			// grpLeftMove
 			// 
@@ -300,9 +290,19 @@ namespace VirtualDesktopHelper
 			this.chkSwitchDesktopOnMove.TabIndex = 0;
 			this.chkSwitchDesktopOnMove.Text = "移动窗口时同时切换虚拟桌面";
 			// 
+			// bottomPanel
+			// 
+			this.bottomPanel.Controls.Add(this.btnSave);
+			this.bottomPanel.Controls.Add(this.btnStartup);
+			this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.bottomPanel.Location = new System.Drawing.Point(3, 223);
+			this.bottomPanel.Name = "bottomPanel";
+			this.bottomPanel.Size = new System.Drawing.Size(478, 35);
+			this.bottomPanel.TabIndex = 5;
+			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(3, 223);
+			this.btnSave.Location = new System.Drawing.Point(3, 3);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(100, 30);
 			this.btnSave.TabIndex = 4;
@@ -312,7 +312,7 @@ namespace VirtualDesktopHelper
 			// 
 			// btnStartup
 			// 
-			this.btnStartup.Location = new System.Drawing.Point(109, 223);
+			this.btnStartup.Location = new System.Drawing.Point(109, 3);
 			this.btnStartup.Name = "btnStartup";
 			this.btnStartup.Size = new System.Drawing.Size(120, 30);
 			this.btnStartup.TabIndex = 6;
@@ -345,6 +345,7 @@ namespace VirtualDesktopHelper
 			this.grpSettings.ResumeLayout(false);
 			this.settingsPanel.ResumeLayout(false);
 			this.settingsPanel.PerformLayout();
+			this.bottomPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
