@@ -334,7 +334,7 @@ namespace VirtualDesktopHelper
 
 		private void BtnSave_Click(object sender, EventArgs e)
 		{
-			SaveSettings();
+					SaveSettings();
 			MessageBox.Show("设置已成功保存！", "信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 

@@ -293,6 +293,7 @@ namespace VirtualDesktopHelper
 			this.btnSave.TabIndex = 4;
 			this.btnSave.Text = "保存设置";
 			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
 			// 
 			// MainForm
 			// 
